@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>M. Dhavaris Octa Ramadhani — Graphic Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   TOKEN — "VIDEO EDITOR / VHS-GLITCH" DIRECTION
+========================================================= */
+:root{
+  --ink:#0a0a0d;
+  --ink2:#141319;
+  --panel:rgba(255,255,255,.045);
+  --panel-border:rgba(255,255,255,.12);
+  --paper:#f2efe4;
+  --red:#ff3232;
+  --cyan:#2ee6d6;
+  --magenta:#ff2e9a;
+  --yellow:#f4d35e;
+  --text:#f2efe4;
+  --text-dim:#9490a0;
+  --text-dimmer:#5f5c6c;
+  --display:'Anton', sans-serif;
+  --mono:'JetBrains Mono', monospace;
+  --body:'Manrope', sans-serif;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+::selection{ background:var(--red); color:var(--ink); }
+body{
+  background:var(--ink); color:var(--text); font-family:var(--body);
+  overflow-x:hidden; cursor:none;
+}
+@media (pointer:coarse){ body{ cursor:auto; } }
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; border:none; cursor:pointer; background:none; color:inherit; }
+::-webkit-scrollbar{ width:10px; }
+::-webkit-scrollbar-track{ background:var(--ink); }
+::-webkit-scrollbar-thumb{ background:var(--red); border-radius:0; }
+
+.wrap{ max-width:1180px; margin:0 auto; padding:0 24px; position:relative; z-index:2; }
+h1,h2,h3{ font-family:var(--display); font-weight:400; letter-spacing:.01em; line-height:1; text-transform:uppercase; }
+.mono{ font-family:var(--mono); }
+
+/* glitch rgb-split heading */
+.glitch{ position:relative; display:inline-block; }
+.glitch::before, .glitch::after{
+  content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%;
+  overflow:hidden; opacity:0;
+}
+.glitch::before{ color:var(--cyan); mix-blend-mode:screen; }
+.glitch::after{ color:var(--magenta); mix-blend-mode:screen; }
+.glitch.glitching::before{ opacity:.85; animation:glitchShift1 .35s steps(2) both; }
+.glitch.glitching::after{ opacity:.85; animation:glitchShift2 .35s steps(2) both; }
+@keyframes glitchShift1{ 0%{ transform:translate(0,0);} 30%{ transform:translate(-4px,2px);} 60%{ transform:translate(3px,-2px);} 100%{ transform:translate(0,0);} }
+@keyframes glitchShift2{ 0%{ transform:translate(0,0);} 30%{ transform:translate(4px,-1px);} 60%{ transform:translate(-3px,2px);} 100%{ transform:translate(0,0);} }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important; scroll-behavior:auto !important; }
+}
+
+/* =========================================================
+   PRELOADER
+========================================================= */
+#preloader{ position:fixed; inset:0; background:var(--ink); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .5s ease, visibility .5s ease; }
+#preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.pre-rec{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:13px; letter-spacing:.15em; color:var(--red); margin-bottom:18px; }
+.rec-dot{ width:9px; height:9px; border-radius:50%; background:var(--red); animation:blinkDot 1s steps(2) infinite; }
+@keyframes blinkDot{ 50%{ opacity:.15; } }
+.pre-title{ font-family:var(--display); font-size:clamp(30px,6vw,46px); letter-spacing:.02em; }
+.pre-bar{ width:260px; height:3px; background:rgba(255,255,255,.12); margin-top:22px; overflow:hidden; }
+.pre-bar-fill{ height:100%; width:0%; background:var(--red); }
+.pre-pct{ margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--text-dimmer); letter-spacing:.1em; }
+
+/* =========================================================
+   SCANLINES + GRAIN
+========================================================= */
+.scanlines{ position:fixed; inset:0; z-index:5; pointer-events:none; opacity:.05;
+  background:repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px); }
+.scan-sweep{ position:fixed; left:0; width:100%; height:120px; z-index:6; pointer-events:none;
+  background:linear-gradient(to bottom, transparent, rgba(46,230,214,.05), transparent);
+  animation:sweep 7s linear infinite; }
+@keyframes sweep{ 0%{ top:-120px; } 100%{ top:110%; } }
+.grain{ position:fixed; inset:0; z-index:4; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* =========================================================
+   CUSTOM CURSOR — VIEWFINDER
+========================================================= */
+.cursor{ position:fixed; top:0; left:0; width:34px; height:34px; z-index:9998; pointer-events:none;
+  transform:translate(-50%,-50%); transition:width .2s,height .2s; }
+.cursor .c{ position:absolute; width:9px; height:9px; border:1.5px solid var(--red); }
+.cursor .tl{ top:0; left:0; border-right:none; border-bottom:none; }
+.cursor .tr{ top:0; right:0; border-left:none; border-bottom:none; }
+.cursor .bl{ bottom:0; left:0; border-right:none; border-top:none; }
+.cursor .br{ bottom:0; right:0; border-left:none; border-top:none; }
+.cursor .lbl{ position:absolute; top:110%; left:50%; transform:translateX(-50%); white-space:nowrap;
+  font-family:var(--mono); font-size:9px; letter-spacing:.1em; color:var(--red); opacity:0; transition:opacity .2s; }
+.cursor.hover{ width:64px; height:64px; }
+.cursor.hover .lbl{ opacity:1; }
+@media (pointer:coarse){ .cursor{ display:none; } }
+
+/* =========================================================
+   TOP STATUS BAR
+========================================================= */
+.topbar{ position:fixed; top:0; left:0; right:0; z-index:300; display:flex; justify-content:space-between; align-items:center;
+  padding:16px 24px; font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; color:var(--text-dim);
+  background:linear-gradient(to bottom, rgba(10,10,13,.9), transparent); pointer-events:none; }
+.topbar .rec{ display:flex; align-items:center; gap:8px; color:var(--red); pointer-events:auto; }
+.topbar .rec .rec-dot{ width:7px; height:7px; }
+.topbar .tc{ pointer-events:auto; }
+
+/* =========================================================
+   DOCK NAV (bottom)
+========================================================= */
+.dock{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:300; display:flex; gap:2px;
+  padding:6px; background:rgba(15,14,18,.75); backdrop-filter:blur(16px); border:1px solid var(--panel-border); }
+.dock a{ font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; padding:11px 16px; color:var(--text-dim); display:flex; gap:8px; align-items:center; transition:.25s; }
+.dock a .num{ color:var(--text-dimmer); }
+.dock a:hover{ color:var(--text); }
+.dock a.active{ color:var(--ink); background:var(--red); }
+.dock a.active .num{ color:var(--ink); }
+@media (max-width:640px){ .dock a .lbl{ display:none; } .dock a{ padding:12px 13px; } }
+
+/* =========================================================
+   HERO
+========================================================= */
+.hero{ position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:140px 0 120px; z-index:2; }
+.hero-eyebrow{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12.5px; letter-spacing:.18em; color:var(--cyan); margin-bottom:26px; }
+.hero-eyebrow::before{ content:"["; } .hero-eyebrow::after{ content:"]"; }
+.hero h1{ font-size:clamp(52px,11vw,148px); }
+.hero h1 .row{ display:block; }
+.hero h1 .outline{ -webkit-text-stroke:1.5px var(--text); color:transparent; }
+.hero-sub{ font-family:var(--mono); font-size:clamp(14px,1.8vw,17px); color:var(--text-dim); margin-top:24px; max-width:560px; }
+.hero-sub .blk{ display:inline-block; width:8px; height:16px; background:var(--red); margin-left:4px; vertical-align:-2px; animation:blinkDot 1s steps(2) infinite; }
+
+.hero-bottom{ display:flex; gap:40px; align-items:flex-end; margin-top:60px; flex-wrap:wrap; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; }
+.btn{ font-family:var(--mono); font-size:12.5px; letter-spacing:.08em; padding:16px 26px; display:inline-flex; align-items:center; gap:10px; border:1px solid var(--panel-border); transition:.3s; }
+.btn-fill{ background:var(--red); color:var(--ink); border-color:var(--red); font-weight:700; }
+.btn-fill:hover{ background:var(--text); border-color:var(--text); }
+.btn-line:hover{ border-color:var(--cyan); color:var(--cyan); }
+
+/* preview frame */
+.reel-frame{ position:relative; width:280px; aspect-ratio:16/10; border:1px solid var(--panel-border); background:linear-gradient(135deg,#1c1a24,#0d0c11);
+  display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; }
+.reel-frame .noise{ position:absolute; inset:0; opacity:.5; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation:noiseShift .2s steps(2) infinite; }
+@keyframes noiseShift{ 0%{ transform:translate(0,0);} 100%{ transform:translate(-4px,3px);} }
+.reel-play{ position:relative; z-index:2; width:52px; height:52px; border-radius:50%; border:1.5px solid var(--text); display:flex; align-items:center; justify-content:center; font-size:16px; background:rgba(10,10,13,.4); }
+.reel-badge{ position:absolute; top:10px; left:10px; font-family:var(--mono); font-size:10px; letter-spacing:.1em; display:flex; align-items:center; gap:6px; color:var(--red); z-index:2; }
+.reel-badge .rec-dot{ width:6px; height:6px; }
+.reel-tc{ position:absolute; top:10px; right:10px; font-family:var(--mono); font-size:10px; color:var(--text-dim); z-index:2; }
+.reel-scrub{ position:absolute; bottom:0; left:0; height:3px; background:var(--red); width:0%; z-index:2; transition:width .1s linear; }
+.reel-label{ position:absolute; bottom:10px; left:10px; font-family:var(--mono); font-size:9.5px; letter-spacing:.12em; color:var(--text-dimmer); z-index:2; }
+
+.hero-tape{ position:absolute; top:110px; right:24px; transform:rotate(6deg); background:var(--yellow); color:var(--ink);
+  font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.08em; padding:8px 14px; box-shadow:0 10px 24px rgba(0,0,0,.4); }
+@media (max-width:820px){ .hero-tape{ display:none; } }
+
+/* =========================================================
+   FILMSTRIP MARQUEE
+========================================================= */
+.filmstrip{ position:relative; z-index:2; background:#000; border-top:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border); padding:14px 0; overflow:hidden; }
+.filmstrip::before, .filmstrip::after{ content:""; position:absolute; left:0; right:0; height:10px; z-index:2;
+  background-image:radial-gradient(circle, var(--ink2) 3px, transparent 3px); background-size:24px 100%; background-position:6px center; }
+.filmstrip::before{ top:0; } .filmstrip::after{ bottom:0; }
+.fs-track{ display:flex; width:max-content; gap:36px; animation:fsScroll 24s linear infinite; }
+.fs-track span{ font-family:var(--mono); font-size:15px; letter-spacing:.08em; color:var(--text-dim); white-space:nowrap; display:flex; align-items:center; gap:12px; }
+.fs-track span b{ color:var(--red); }
+@keyframes fsScroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+
+/* =========================================================
+   SECTION GENERIC
+========================================================= */
+section{ position:relative; z-index:2; padding:120px 0; }
+.sec-head{ margin-bottom:56px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; border-bottom:1px solid var(--panel-border); padding-bottom:24px; }
+.sec-head .idx{ font-family:var(--mono); font-size:13px; color:var(--text-dimmer); letter-spacing:.1em; }
+.sec-head h2{ font-size:clamp(34px,5.4vw,58px); margin-top:8px; }
+.sec-head p{ font-family:var(--mono); font-size:12.5px; color:var(--text-dim); max-width:280px; line-height:1.7; }
+
+.reveal{ opacity:0; transform:translateY(36px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in-view{ opacity:1; transform:translateY(0); }
+
+.panel{ background:var(--panel); border:1px solid var(--panel-border); transition:border-color .3s, transform .3s; }
+.panel:hover{ border-color:rgba(255,255,255,.3); }
+
+/* =========================================================
+   ABOUT — CONTACT SHEET
+========================================================= */
+.about-grid{ display:grid; grid-template-columns:1.1fr 1fr; gap:26px; }
+@media (max-width:880px){ .about-grid{ grid-template-columns:1fr; } }
+.polaroid{ background:var(--paper); padding:14px 14px 46px; transform:rotate(-3deg); box-shadow:0 20px 50px rgba(0,0,0,.5); position:relative; max-width:300px; }
+.polaroid .shot{ aspect-ratio:4/5; background:linear-gradient(135deg,var(--red),var(--magenta)); display:flex; align-items:center; justify-content:center; font-size:70px; overflow:hidden; }
+.polaroid .shot img{ width:100%; height:100%; object-fit:cover; object-position:top center; filter:grayscale(.15) contrast(1.05); }
+.polaroid figcaption{ position:absolute; bottom:12px; left:14px; font-family:var(--mono); font-size:11px; color:#333; letter-spacing:.05em; }
+.tape-corner{ position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-2deg); width:70px; height:24px; background:rgba(244,211,94,.85); }
+
+.about-copy{ display:flex; flex-direction:column; gap:26px; justify-content:center; }
+.about-copy p{ font-size:16px; line-height:1.75; color:var(--text-dim); }
+.about-copy strong{ color:var(--text); }
+.exif{ display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--panel-border); }
+.exif div{ flex:1; min-width:120px; padding:16px 18px; border-right:1px solid var(--panel-border); font-family:var(--mono); }
+.exif div:last-child{ border-right:none; }
+.exif .k{ font-size:10px; color:var(--text-dimmer); letter-spacing:.12em; }
+.exif .v{ font-size:20px; margin-top:6px; color:var(--yellow); font-weight:700; }
+
+/* =========================================================
+   SKILLS — MIXING CONSOLE
+========================================================= */
+.console{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0; border:1px solid var(--panel-border); }
+.channel{ padding:26px 22px; border-right:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border); }
+.channel h3{ font-family:var(--mono); font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:18px; font-weight:700; }
+.eq-row{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.eq-row:last-child{ margin-bottom:0; }
+.eq-label{ font-family:var(--mono); font-size:11.5px; width:90px; flex-shrink:0; color:var(--text-dim); }
+.eq-track{ flex:1; height:6px; background:rgba(255,255,255,.08); position:relative; }
+.eq-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--red)); transition:width 1.3s cubic-bezier(.16,1,.3,1); }
+.eq-pct{ font-family:var(--mono); font-size:11px; color:var(--text-dimmer); width:34px; text-align:right; }
+
+/* =========================================================
+   PROJECTS — VIDEO GALLERY
+========================================================= */
+.gallery{ display:grid; grid-template-columns:repeat(2,1fr); gap:2px; background:var(--panel-border); border:1px solid var(--panel-border); }
+@media (max-width:760px){ .gallery{ grid-template-columns:1fr; } }
+.clip{ background:var(--ink); cursor:pointer; }
+.clip-thumb{ position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; font-size:42px; overflow:hidden; }
+.clip-thumb .clip-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+.clip-thumb .clip-emoji{ position:relative; z-index:0; }
+.ct1{ background:linear-gradient(135deg,#ff3232,#8b1e9c); } .ct2{ background:linear-gradient(135deg,#2ee6d6,#1a4fd6); }
+.ct3{ background:linear-gradient(135deg,#f4d35e,#ff3232); } .ct4{ background:linear-gradient(135deg,#ff2e9a,#2ee6d6); }
+.ct5{ background:linear-gradient(135deg,#8b1e9c,#2ee6d6); } .ct6{ background:linear-gradient(135deg,#ff3232,#f4d35e); }
+.clip-badge{ position:absolute; top:12px; left:12px; font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:#fff; display:flex; align-items:center; gap:6px; background:rgba(0,0,0,.4); padding:5px 9px; }
+.clip-badge .rec-dot{ width:6px; height:6px; }
+.clip-dur{ position:absolute; top:12px; right:12px; font-family:var(--mono); font-size:10px; color:#fff; background:rgba(0,0,0,.4); padding:5px 9px; }
+.clip-play{ width:56px; height:56px; border-radius:50%; border:1.5px solid #fff; display:flex; align-items:center; justify-content:center; opacity:0; transform:scale(.7); transition:.35s; background:rgba(0,0,0,.25); z-index:2; }
+.clip:hover .clip-play{ opacity:1; transform:scale(1); }
+.clip-scrub{ position:absolute; bottom:0; left:0; height:3px; background:#fff; width:0%; transition:width .6s ease; }
+.clip:hover .clip-scrub{ width:100%; }
+.clip-info{ padding:20px 22px; }
+.clip-info .fname{ font-family:var(--mono); font-size:12.5px; color:var(--yellow); margin-bottom:8px; }
+.clip-info h3{ font-family:var(--display); font-size:20px; text-transform:none; margin-bottom:8px; letter-spacing:0; }
+.clip-info p{ font-size:13.5px; color:var(--text-dim); line-height:1.6; margin-bottom:12px; }
+.clip-tags{ display:flex; flex-wrap:wrap; gap:8px; font-family:var(--mono); font-size:10.5px; color:var(--text-dimmer); }
+.clip-tags span::before{ content:"["; } .clip-tags span::after{ content:"]"; }
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+.tl-scroll{ overflow-x:auto; padding-bottom:20px; }
+.tl-track{ display:flex; gap:0; min-width:max-content; position:relative; padding-top:30px; }
+.tl-track::before{ content:""; position:absolute; top:8px; left:0; right:0; height:1px; background:var(--panel-border); }
+.tl-clip{ width:240px; padding:22px 22px 0; border-left:1px solid var(--panel-border); position:relative; }
+.tl-clip::before{ content:""; position:absolute; top:4px; left:-1px; width:9px; height:9px; background:var(--red); transform:translateX(-4.5px); }
+.tl-clip .yr{ font-family:var(--mono); font-size:11px; color:var(--text-dimmer); letter-spacing:.1em; }
+.tl-clip h3{ font-family:var(--display); font-size:19px; text-transform:none; margin:10px 0 6px; letter-spacing:0; }
+.tl-clip p{ font-size:13px; color:var(--text-dim); line-height:1.6; padding-bottom:26px; }
+
+/* =========================================================
+   COMMENTS (testimonials)
+========================================================= */
+.comments{ display:flex; flex-direction:column; gap:0; border:1px solid var(--panel-border); }
+.comment{ display:flex; gap:16px; padding:24px 26px; border-bottom:1px solid var(--panel-border); }
+.comment:last-child{ border-bottom:none; }
+.c-avatar{ width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--red),var(--magenta)); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.c-body .c-top{ display:flex; gap:10px; align-items:baseline; margin-bottom:6px; flex-wrap:wrap; }
+.c-name{ font-weight:700; font-size:14.5px; }
+.c-handle{ font-family:var(--mono); font-size:12px; color:var(--text-dimmer); }
+.c-text{ font-size:14.5px; color:var(--text-dim); line-height:1.6; }
+.c-meta{ margin-top:8px; font-family:var(--mono); font-size:11px; color:var(--text-dimmer); display:flex; gap:16px; }
+
+/* =========================================================
+   CONTACT — EXPORT PANEL
+========================================================= */
+.export-panel{ border:1px solid var(--panel-border); }
+.export-head{ display:flex; justify-content:space-between; align-items:center; padding:18px 26px; border-bottom:1px solid var(--panel-border); font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; color:var(--text-dim); }
+.export-head .dots{ display:flex; gap:6px; }
+.export-head .dots span{ width:9px; height:9px; border-radius:50%; background:var(--panel-border); }
+.export-body{ padding:30px; display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+@media (max-width:760px){ .export-body{ grid-template-columns:1fr; } }
+.exp-field{ margin-bottom:20px; }
+.exp-field label{ font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; color:var(--text-dimmer); display:block; margin-bottom:8px; }
+.exp-field input, .exp-field textarea{ width:100%; padding:13px 14px; background:rgba(255,255,255,.04); border:1px solid var(--panel-border); color:var(--text); font-family:var(--mono); font-size:13.5px; resize:vertical; }
+.exp-field input:focus, .exp-field textarea:focus{ outline:none; border-color:var(--cyan); }
+.pill-group{ display:flex; gap:8px; flex-wrap:wrap; }
+.pill{ font-family:var(--mono); font-size:11px; padding:9px 14px; border:1px solid var(--panel-border); color:var(--text-dim); transition:.25s; }
+.pill.sel{ background:var(--red); color:var(--ink); border-color:var(--red); font-weight:700; }
+.render-progress{ margin-top:10px; height:3px; background:rgba(255,255,255,.1); overflow:hidden; display:none; }
+.render-progress.show{ display:block; }
+.render-fill{ height:100%; width:0%; background:var(--red); }
+
+.socials{ display:flex; flex-direction:column; }
+.social-row{ display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border:1px solid var(--panel-border); border-top:none; font-family:var(--mono); font-size:13px; }
+.social-row:first-child{ border-top:1px solid var(--panel-border); }
+.social-row:hover{ background:rgba(255,255,255,.03); color:var(--cyan); }
+
+/* =========================================================
+   FOOTER
+========================================================= */
+footer{ position:relative; z-index:2; padding:0 0 150px; }
+.clapper{ border-top:1px solid var(--panel-border); padding:60px 0 40px; text-align:center; }
+.clapper h2{ font-size:clamp(40px,8vw,90px); }
+.credits-roll{ overflow:hidden; border-top:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border); padding:14px 0; margin-top:40px; }
+.credits-track{ display:flex; width:max-content; gap:36px; animation:fsScroll 20s linear infinite; font-family:var(--mono); font-size:12px; color:var(--text-dimmer); letter-spacing:.08em; }
+.foot-bottom{ display:flex; justify-content:space-between; padding:24px; font-family:var(--mono); font-size:11px; color:var(--text-dimmer); flex-wrap:wrap; gap:10px; }
+
+.back-to-top{ position:fixed; right:22px; bottom:96px; z-index:300; width:44px; height:44px; border:1px solid var(--panel-border);
+  background:rgba(15,14,18,.7); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; font-size:15px;
+  opacity:0; pointer-events:none; transition:.3s; }
+.back-to-top.show{ opacity:1; pointer-events:auto; }
+.back-to-top:hover{ background:var(--red); color:var(--ink); border-color:var(--red); }
+
+/* =========================================================
+   MODAL
+========================================================= */
+.modal-overlay{ position:fixed; inset:0; background:rgba(4,4,6,.85); backdrop-filter:blur(6px); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .3s; }
+.modal-overlay.show{ opacity:1; pointer-events:auto; }
+.modal-box{ max-width:600px; width:100%; background:var(--ink2); border:1px solid var(--panel-border); transform:translateY(24px) scale(.97); transition:transform .35s; max-height:88vh; overflow-y:auto; }
+.modal-overlay.show .modal-box{ transform:translateY(0) scale(1); }
+.modal-head{ display:flex; justify-content:space-between; align-items:center; padding:16px 22px; border-bottom:1px solid var(--panel-border); font-family:var(--mono); font-size:11.5px; color:var(--red); }
+.modal-close{ width:30px; height:30px; border:1px solid var(--panel-border); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--text-dim); }
+.modal-thumb{ position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; font-size:50px; overflow:hidden; }
+.modal-thumb .modal-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+.modal-thumb .modal-emoji{ position:relative; z-index:0; }
+.modal-content{ padding:26px 28px 30px; }
+.modal-content h3{ font-family:var(--display); font-size:26px; text-transform:none; letter-spacing:0; margin-bottom:12px; }
+.modal-content p{ color:var(--text-dim); line-height:1.7; font-size:14.5px; margin-bottom:18px; }
+.modal-tags{ display:flex; flex-wrap:wrap; gap:10px; font-family:var(--mono); font-size:11px; color:var(--text-dimmer); margin-bottom:22px; }
+.modal-tags span::before{ content:"["; } .modal-tags span::after{ content:"]"; }
+.modal-links{ display:flex; gap:12px; flex-wrap:wrap; }
+
+/* TOAST */
+.toast{ position:fixed; top:22px; left:50%; transform:translateX(-50%) translateY(-140%); z-index:600; background:var(--ink2); border:1px solid var(--panel-border); padding:15px 22px; font-family:var(--mono); font-size:12.5px; display:flex; align-items:center; gap:10px; transition:transform .4s cubic-bezier(.16,1,.3,1); }
+.toast.show{ transform:translateX(-50%) translateY(0); }
+.confetti-piece{ position:fixed; top:0; z-index:700; pointer-events:none; }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="pre-rec"><span class="rec-dot"></span> REC — INITIALIZING</div>
+  <div class="pre-title">DAPPS<span style="color:var(--red)">.</span>REEL</div>
+  <div class="pre-bar"><div class="pre-bar-fill" id="preFill"></div></div>
+  <div class="pre-pct" id="prePct">BUFFERING 0%</div>
+</div>
+
+<div class="cursor" id="cursor">
+  <span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+  <span class="lbl" id="cursorLbl">VIEW</span>
+</div>
+<div class="scanlines"></div>
+<div class="scan-sweep"></div>
+<div class="grain"></div>
+
+<div class="topbar">
+  <div class="rec"><span class="rec-dot"></span> LIVE</div>
+  <div class="tc" id="timecode">00:00:00:00</div>
+</div>
+
+<nav class="dock" id="dock">
+  <a href="#home" data-sec="home" class="active"><span class="num">00</span><span class="lbl">HOME</span></a>
+  <a href="#about" data-sec="about"><span class="num">01</span><span class="lbl">ABOUT</span></a>
+  <a href="#skills" data-sec="skills"><span class="num">02</span><span class="lbl">SKILLS</span></a>
+  <a href="#work" data-sec="work"><span class="num">03</span><span class="lbl">WORK</span></a>
+  <a href="#contact" data-sec="contact"><span class="num">04</span><span class="lbl">CONTACT</span></a>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="wrap">
+    <div class="hero-eyebrow">GRAPHIC DESIGNER / CONTENT CREATOR</div>
+    <h1>
+      <span class="row glitch" data-text="RAFA">M. Dhavaris</span>
+      <span class="row outline glitch" data-text="ADITYA">OCTA RAMADHANI</span>
+    </h1>
+    <p class="hero-sub" id="typewriter">Graphic Designer. Event & Wedding Content Creator<span class="blk"></span></p>
+
+    <div class="hero-bottom">
+      <div class="hero-cta">
+        <a href="#work" class="btn btn-fill">▶ PLAY SHOWREEL</a>
+        <a href="#contact" class="btn btn-line">↓ HUBUNGI SAYA</a>
+      </div>
+      <div class="reel-frame">
+        <div class="noise"></div>
+        <div class="reel-badge"><span class="rec-dot"></span>REC</div>
+        <div class="reel-tc" id="reelTc">00:00 / 02:14</div>
+        <div class="reel-play">▶</div>
+        <div class="reel-label">PREVIEW_REEL.mov</div>
+        <div class="reel-scrub" id="reelScrub"></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-tape">★ OPEN FOR COLLABORATION ★</div>
+</header>
+
+<!-- FILMSTRIP MARQUEE -->
+<div class="filmstrip">
+  <div class="fs-track">
+    <span>GRAPHIC DESIGN <b>//</b> VIDEO EDITING <b>//</b> FRONT-END DEV <b>//</b> CONTENT CREATION <b>//</b> UI/UX <b>//</b> SOUND DESIGN <b>//</b> ART DIRECTION <b>//</b></span>
+    <span>GRAPHIC DESIGN <b>//</b> VIDEO EDITING <b>//</b> FRONT-END DEV <b>//</b> CONTENT CREATION <b>//</b> UI/UX <b>//</b> SOUND DESIGN <b>//</b> ART DIRECTION <b>//</b></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 01 — PROFILE</div>
+        <h2>Tentang <span style="color:var(--red)">SAYA</span></h2>
+      </div>
+      <p>Suka belajar sesuatu yang baru</p>
+    </div>
+
+    <div class="about-grid">
+      <figure class="polaroid reveal">
+        <div class="tape-corner"></div>
+        <div class="shot"><img src="images/foto-saya.jpg" alt="Foto M. Dhavaris Octa Ramadhani"></div>
+        <figcaption>FRAME_01 — self portrait, Full Body</figcaption>
+      </figure>
+
+      <div class="about-copy reveal">
+        <p><strong>Halo, aku Dhava </strong> — seorang Graphic Designer dengan background Manajemen Informatika yang suka mengubah ide menjadi visual yang punya karakter. Kegiatanku terkait dengan layout, typography, warna, dan visual content menggunakan <strong>Photoshop, Illustrator, CorelDRAW, dan Canva.</strong></p>
+        <p>Buatku, desain bukan cuma soal terlihat bagus, tapi bagaimana sebuah visual bisa menyampaikan pesan, membangun identitas, dan meninggalkan kesan.</p>
+
+        <div class="exif">
+          <div><div class="k">PROJECTS</div><div class="v">50+</div></div>
+          <div><div class="k">EXPERIENCE</div><div class="v">< 1THN </div></div> 
+          <div><div class="k">SOFTWARE</div><div class="v">12+</div></div>
+          <div><div class="k">COFFEE</div><div class="v">∞</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 02 — MIXING CONSOLE</div>
+        <h2>Skill & <span style="color:var(--cyan)">Tools</span></h2>
+      </div>
+      <p>ringkasan software yang sering digunakan.</p>
+    </div>
+
+    <div class="console reveal">
+      <div class="channel">
+        <h3>Development </h3>
+        <div class="eq-row"><span class="eq-label">HTML/CSS</span><div class="eq-track"><div class="eq-fill" data-w="70"></div></div><span class="eq-pct">70%</span></div>
+        <div class="eq-row"><span class="eq-label">JavaScript</span><div class="eq-track"><div class="eq-fill" data-w="60"></div></div><span class="eq-pct">60%</span></div>
+        <div class="eq-row"><span class="eq-label">PHP</span><div class="eq-track"><div class="eq-fill" data-w="50"></div></div><span class="eq-pct">50%</span></div>
+      </div>
+      <div class="channel">
+        <h3>Motion & Edit</h3>
+        <div class="eq-row"><span class="eq-label">Premiere Pro</span><div class="eq-track"><div class="eq-fill" data-w="60"></div></div><span class="eq-pct">60%</span></div>
+        <div class="eq-row"><span class="eq-label">Cap Cut</span><div class="eq-track"><div class="eq-fill" data-w="90"></div></div><span class="eq-pct">90%</span></div>
+        <div class="eq-row"><span class="eq-label">DaVinci Resolve</span><div class="eq-track"><div class="eq-fill" data-w="30"></div></div><span class="eq-pct">30%</span></div>
+      </div>
+      <div class="channel">
+        <h3>Design</h3>
+        <div class="eq-row"><span class="eq-label">Photoshop</span><div class="eq-track"><div class="eq-fill" data-w="80"></div></div><span class="eq-pct">80%</span></div>
+        <div class="eq-row"><span class="eq-label">Illustrator</span><div class="eq-track"><div class="eq-fill" data-w="60"></div></div><span class="eq-pct">60%</span></div>
+        <div class="eq-row"><span class="eq-label">Corel Draw</span><div class="eq-track"><div class="eq-fill" data-w="80"></div></div><span class="eq-pct">80%</span></div>
+        <div class="eq-row"><span class="eq-label">Canva</span><div class="eq-track"><div class="eq-fill" data-w="95"></div></div><span class="eq-pct">95%</span></div>
+        <div class="eq-row"><span class="eq-label">Blender 3D</span><div class="eq-track"><div class="eq-fill" data-w="50"></div></div><span class="eq-pct">50%</span></div>
+      </div>
+      <div class="channel">
+        <h3>Administrasi & Data</h3>
+        <div class="eq-row"><span class="eq-label">Microsoft Office</span><div class="eq-track"><div class="eq-fill" data-w="85"></div></div><span class="eq-pct">85%</span></div>
+        <div class="eq-row"><span class="eq-label">Google Sheets</span><div class="eq-track"><div class="eq-fill" data-w="80"></div></div><span class="eq-pct">80%</span></div>
+        <div class="eq-row"><span class="eq-label">Data Entry</span><div class="eq-track"><div class="eq-fill" data-w="90"></div></div><span class="eq-pct">90%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 03 — SELECTED WORK</div>
+        <h2>Project <span style="color:var(--magenta)">Gallery</span></h2>
+      </div>
+      <p>Klik salah satu clip buat lihat detail lengkap proyeknya.</p>
+    </div>
+
+    <div class="gallery reveal" id="galleryGrid">
+      <div class="clip" data-title="Short Movie — AGENTS" data-desc="Proyek tim untuk Proker HMJMI" data-tags="Premier Pro,Video Editing,Short Movie" data-img="images/project-1-lumen.jpg" data-emoji="🎧" data-dur="02:14" data-watch="https://drive.google.com/file/d/1D5Qs5MbZk0R9SzJmucz1gf0x8x0-vs9G/view?usp=drive_link" data-drive="https://drive.google.com/drive/folders/1nqV4XqOq0Bec0xvftvZQU6bqeyOhZKHJ?usp=sharing">
+        <div class="clip-thumb ct1"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">02:14</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-1-lumen.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">🎧</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_01_Short Movie HMJMI.mp4</div><h3>SHORT MOVIE AGENTS HMJMI</h3><p>Proyek tim short movie untuk Proker HMJMI</p><div class="clip-tags"><span>Premier Pro</span><span>Video Editing</span></div></div>
+      </div>
+
+      <div class="clip" data-title="MASCOT — ERCO" data-desc="Mascot 3D dibuat menggunakan Blender 3D, Project 3D Pertama." data-tags="Blender,3D,Mascot" data-img="images/project-2-nimbus.jpg" data-emoji="⛅" data-dur="01:48" data-watch="https://drive.google.com/file/d/1DB62NKy7NRtdGjwuJQB5T3sRjfb5gJ9S/view?usp=drive_link" data-drive="https://drive.google.com/drive/folders/1uP-LgNOThZ8-bZHXski94GqsCfg5jOt6?usp=drive_link">
+        <div class="clip-thumb ct2"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">01:48</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-2-nimbus.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">⛅</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_02_MASCOT.png</div><h3>MASCOT ERCO 3D</h3><p>Pembuatan Mascot 3D Project 3D Pertama di HMJMI.</p><div class="clip-tags"><span>BLENDER</span><span>3D</span></div></div>
+      </div>
+
+      <div class="clip" data-title="Wedding & Event — Content Creator" data-desc="Freelance Wedding & Event Content Creator shoot by IP 16" data-tags="Cap Cut ,Video Editing" data-img="images/project-3-reelcut.jpg" data-emoji="🎥" data-dur="03:02" data-watch="https://drive.google.com/file/d/1ux7w_3jOFFK66ye6nrJt37OsvdXHQfmN/view?usp=drive_link" data-drive="https://drive.google.com/drive/folders/1mTfl8bc_qbstbH04gwA3qsRNui-t9ONl?usp=sharing">
+        <div class="clip-thumb ct3"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">03:02</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-3-reelcut.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">🎥</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_03_Wedding CONTENT CREATOR.mp4</div><h3>WEDDING & EVENT CONTENT CREATOR</h3><p>Freelance Wedding & Event Konten Kreator.</p><div class="clip-tags"><span>Cap Cut</span><span>Aesthetic</span></div></div>
+      </div>
+
+      <div class="clip" data-title="NOVOTEL — Content Project" data-desc="Konten Marketing & Kegiatan/Event untuk Hotel Novotel Palembang." data-tags="Capcut,Content,Hospitality" data-img="images/project-4-snackr.jpg" data-emoji="🍔" data-dur="02:37" data-watch="https://drive.google.com/file/d/1Brwc-SlUhzXHvXNfaVmyr0AjMJgnn6hH/view?usp=drive_link" data-drive="https://drive.google.com/drive/folders/1CS3MnrHUXC6G4CA2EXqpPWUTxdrf7vfg?usp=drive_link">
+        <div class="clip-thumb ct4"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">02:37</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-4-snackr.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">🍔</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_04_NOVOTEL KONTEN.mp4</div><h3>NOVOTEL CONTENT PROJECT</h3><p>Konten Marketing & Kegiatan/Event untuk Hotel Novotel Palembang.</p><div class="clip-tags"><span>Premier Pro</span><span>Konten</span></div></div>
+      </div>
+
+      <div class="clip" data-title="ILUSTRATOR — Logo Design" data-desc="Pembuatan Design logo untuk kebutuhan pribadi & Client." data-tags="Design,Ilustrator,Logo" data-img="images/project-5-orbit.jpg" data-emoji="🪐" data-dur="01:12" data-watch="https://drive.google.com/file/d/1HOMsSqzKMKmuSjEG3Q9P9jQdtC0bgRs5/view?usp=drive_link" data-drive="https://drive.google.com/drive/folders/18EX6l1PKAImm2ZWOapdewb3QxnJYfdIm?usp=drive_link">
+        <div class="clip-thumb ct5"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">PNG FILE</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-5-orbit.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">🪐</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_05_LOGO DESIGN.png</div><h3>DESIGN LOGO</h3><p>Pembuatan Design Logo.</p><div class="clip-tags"><span>Ilustrator</span><span>Deisgn</span></div></div>
+      </div>
+
+      <div class="clip" data-title="Pulse — Fitness Tracker" data-desc="pembuatan Aplikasi berbasis website project dasar native & Framework." data-tags="Native,Website, Aplikasi" data-img="images/project-6-pulse.jpg" data-emoji="🏃" data-dur="02:05" data-watch="" data-drive="https://drive.google.com/drive/folders/1XWr6MHnWZH90eqSWcuS1-ziEyQDGYwb0?usp=sharing">
+        <div class="clip-thumb ct6"><div class="clip-badge"><span class="rec-dot"></span>CLIP</div><div class="clip-dur">02:05</div><div class="clip-play">▶</div><div class="clip-scrub"></div><img class="clip-img" src="images/project-6-pulse.jpg" alt="" onerror="this.style.display='none'"><span class="clip-emoji" style="position:relative;z-index:0">🏃</span></div>
+        <div class="clip-info"><div class="fname">PROJECT_06_WEBSITE DASAR.html</div><h3>WEBSITE & APLIKASI DASAR</h3><p>Aplikasi berbasis website project dasar native & Framework.</p><div class="clip-tags"><span>Native</span><span>Website</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 03.5 — TIMELINE TRACK</div>
+        <h2>Perjalanan <span style="color:var(--yellow)">Karir</span></h2>
+      </div>
+      <p>Geser ke samping buat lihat clip-clip perjalanan aku.</p>
+    </div>
+    <div class="tl-scroll reveal">
+      <div class="tl-track">
+        <div class="tl-clip"><div class="yr">2020</div><h3>Belajar Otodidak Design & Ikut Organisasi</h3><p>Mulai eksplor Software Design & editing video dari YouTube tutorial.</p></div>
+        <div class="tl-clip"><div class="yr">2021</div><h3>Belajar Otodidak Phyton & Bahasa pemrograman lainnya</h3><p>Mulai eksplor HTML/CSS & editing video dari YouTube tutorial dhea.</p></div>
+        <div class="tl-clip"><div class="yr">2022</div><h3>Freelance Admin & Data Entry</h3><p>Kerja freelance admin, handle input & pengelolaan data laporan secara rapi dan teliti.</p></div>
+        <div class="tl-clip"><div class="yr">Agustus 2022</div><h3>Masuk Kuliah Jurusan Manajemen Informatika</h3><p>Mempelajari berbagai macam tentang sistem informasi dan teknologi informasi.</p></div>
+        <div class="tl-clip"><div class="yr">Desember 2022</div><h3>Freelance Graphic Designer</h3><p>Mulai project dan freelance sebagai desain grafis, pembuatan cover & proposal BPK serta desain Logo.</p></div>
+        <div class="tl-clip"><div class="yr">Agustus 2024</div><h3>Magang STI PT PLN UIP SUMBAGSEL</h3><p>Jadi bagian tim IT, fokus di jaringan, Hardware, Software dan Sistem Inofrmasi.</p></div>
+        <div class="tl-clip"><div class="yr">November 2026</div><h3>Trainee Graphic Designer</h3><p>Menjadi bagian dari program trainee sebagai desain grafis, pembuatan materi cetak & konten digital, serta mendapatkan pengalaman kerja real dan profesional dengan hospitality.</p></div>
+        <div class="tl-clip"><div class="yr">2026</div><h3>Sekarang</h3><p>memulai freelance Event & Content creator semakin kuat dalam hal manajemen waktu dan penyelesaian tugas deadline cepat.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMENTS / TESTIMONIALS -->
+<section id="comments-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 04 — COMMENTS</div>
+        <h2>Kata <span style="color:var(--red)">Mereka</span></h2>
+      </div>
+      <p>Feedback & Testimoni klien setelah kerja bareng.</p>
+    </div>
+    <div class="comments reveal">
+      <div class="comment">
+        <div class="c-avatar">👨‍💼</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">Della & Sandi </span><span class="c-handle">@della.tss</span></div>
+          <p class="c-text">kak bagusss nian sumpahh, mbakku tadi bilang WCC nya gercep nian </p>
+          <div class="c-meta"><span>👍 25</span><span>1 Minggu lalu</span></div>
+        </div>
+      </div>
+      <div class="comment">
+        <div class="c-avatar">👨‍💼</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">Puji & Thariq </span><span class="c-handle">@lesta.sz</span></div>
+          <p class="c-text">Keren bgt reels nya, pengambilan tiap sudut nyaa oke bgt sii mantapppp emg.</p>
+          <div class="c-meta"><span>👍 48</span><span>2 Minggu lalu</span></div>
+        </div>
+      </div>
+      <div class="comment">
+        <div class="c-avatar">🧑‍🎨</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">Gizella & Marco</span><span class="c-handle">@njellsss_</span></div>
+          <p class="c-text">Ka dhavaaa terimakasiii banyakkkk , bagusss pollll cinematicnyaaa ga salah pilih WCC ni akuuuu🙏🏻</p>
+          <div class="c-meta"><span>👍 97</span><span>1 bulan lalu</span></div>
+        </div>
+      </div>
+      <div class="comment">
+        <div class="c-avatar">👨‍💼</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">Adelia & Dimas </span><span class="c-handle">@dimskuy_14</span></div>
+          <p class="c-text">MasyaAllah , maunya pake kk lgi nanti aamiin. Tpi kita insya Allah Desember kak hehe</p>
+          <div class="c-meta"><span>👍 76</span><span>1 bulan lalu</span></div>
+        </div>
+      </div>
+      <div class="comment">
+        <div class="c-avatar">👩‍💻</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">Abdi & Sashmita </span><span class="c-handle">@tianysr_</span></div>
+          <p class="c-text">Keren bgt reels nya, pengambilan tiap sudut nyaa oke bgt sii mantapppp emg.</p>
+          <div class="c-meta"><span>👍 115</span><span>2 bulan lalu</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="idx">// 05 — EXPORT</div>
+        <h2>Kirim <span style="color:var(--cyan)">Pesan</span></h2>
+      </div>
+      <p>Isi form terus render & kirim!</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="export-panel reveal">
+        <div class="export-head"><span>NEW_MESSAGE.export</span><span class="dots"><span></span><span></span><span></span></span></div>
+        <form class="export-body" id="contactForm" style="display:block;">
+          <div class="exp-field"><label>FILE NAME (Nama Kamu)</label><input type="text" name="nama" placeholder="Nama lengkap" required></div>
+          <div class="exp-field"><label>RETURN ADDRESS (Email)</label><input type="email" name="email" placeholder="kamu@email.com" required></div>
+          <div class="exp-field">
+            <label>PRIORITY</label>
+            <div class="pill-group" id="priorityGroup">
+              <span class="pill sel" data-v="santai">SANTAI</span>
+              <span class="pill" data-v="bisnis">BISNIS</span>
+              <span class="pill" data-v="urgent">URGENT 🔥</span>
+            </div>
+          </div>
+          <div class="exp-field"><label>NOTES (Pesan)</label><textarea rows="4" name="pesan" placeholder="Ceritain proyek kamu di sini..." required></textarea></div>
+          <button type="submit" class="btn btn-fill" style="width:100%; justify-content:center;">▶ RENDER & SEND</button>
+          <div class="render-progress" id="renderProgress"><div class="render-fill" id="renderFill"></div></div>
+        </form>
+      </div>
+
+      <div class="socials reveal">
+        <a href="https://www.instagram.com/dhavaris_/" class="social-row"><span>📸 Instagram</span><span>→</span></a>
+        <a href="https://www.linkedin.com/in/m-dhavaris-octa-ramadhani-9a0864360/" class="social-row"><span>💼 LinkedIn</span><span>→</span></a>
+        <a href="https://github.com/dhavaris" class="social-row"><span>🐙 GitHub</span><span>→</span></a>
+        <a href="https://wa.me/6281535305262" class="social-row"><span>💬 WhatsApp</span><span>→</span></a>
+        <a href="mailto:dhavaris.04@gmail.com" class="social-row"><span>📧 dhavaris.04@gmail.com</span><span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="clapper wrap">
+    <h2 class="glitch" data-text="CUT.">CUT.</h2>
+  </div>
+  <div class="credits-roll">
+    <div class="credits-track">
+      <span>DIRECTED BY M. Dhavaris Octa Ramadhani</span><span>·</span><span>THANK YOU FOR WATCHING</span><span>·</span><span>MADE WITH ☕ AND LATE NIGHTS</span><span>·</span>
+      <span>DIRECTED BY M. Dhavaris Octa Ramadhani</span><span>·</span><span>THANK YOU FOR WATCHING</span><span>·</span><span>MADE WITH ☕ AND LATE NIGHTS</span><span>·</span>
+    </div>
+  </div>
+  <div class="foot-bottom wrap">
+    <span>© 2026 M. Dhavaris Octa Ramadhani — ALL RIGHTS RESERVED</span>
+    <span>BUILT NATIVE — NO FRAMEWORK</span>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop">⏮</button>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><span><span class="rec-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:6px;"></span>NOW PLAYING</span><button class="modal-close" id="modalClose">✕</button></div>
+    <div class="modal-thumb" id="modalThumb">
+      <img class="modal-img" id="modalImg" src="" alt="" onerror="this.style.display='none'">
+      <span class="modal-emoji" id="modalEmoji"></span>
+    </div>
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-links">
+        <a href="#" id="modalWatch" target="_blank" rel="noopener" class="btn btn-fill">▶ WATCH THE MOVIE</a>
+        <a href="#" id="modalDrive" target="_blank" rel="noopener" class="btn btn-line">LIHAT PROYEK LAINNYA</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ <span id="toastMsg">Pesan terkirim!</span></div>
+
+<script>
+/* ============ PRELOADER ============ */
+(function(){
+  const fill=document.getElementById('preFill');
+  const pct=document.getElementById('prePct');
+  const pre=document.getElementById('preloader');
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*20;
+    if(p>=100){ p=100; clearInterval(iv); setTimeout(()=>pre.classList.add('hide'),350); }
+    fill.style.width=p+'%';
+    pct.textContent='BUFFERING '+Math.floor(p)+'%';
+  },160);
+})();
+
+/* ============ CUSTOM CURSOR ============ */
+(function(){
+  const cur=document.getElementById('cursor');
+  const lbl=document.getElementById('cursorLbl');
+  let mx=0,my=0,cx=0,cy=0;
+  window.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; });
+  function loop(){
+    cx+=(mx-cx)*0.35; cy+=(my-cy)*0.35;
+    cur.style.left=cx+'px'; cur.style.top=cy+'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+  document.querySelectorAll('.clip,.btn,a,.pill,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.classList.add('hover'); lbl.textContent = el.classList.contains('clip') ? 'PLAY' : 'CLICK'; });
+    el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
+  });
+})();
+
+/* ============ TOP TIMECODE ============ */
+(function(){
+  const tc=document.getElementById('timecode');
+  const start=Date.now();
+  function pad(n){ return String(n).padStart(2,'0'); }
+  setInterval(()=>{
+    const el=Date.now()-start;
+    const h=Math.floor(el/3600000);
+    const m=Math.floor((el%3600000)/60000);
+    const s=Math.floor((el%60000)/1000);
+    const f=Math.floor((el%1000)/42);
+    tc.textContent=pad(h)+':'+pad(m)+':'+pad(s)+':'+pad(f);
+  },42);
+})();
+
+/* ============ HERO REEL FAKE PLAYBACK ============ */
+(function(){
+  const scrub=document.getElementById('reelScrub');
+  const tc=document.getElementById('reelTc');
+  const total=134; // seconds fake
+  let cur=0;
+  setInterval(()=>{
+    cur=(cur+1)%total;
+    scrub.style.width=(cur/total*100)+'%';
+    const m=Math.floor(cur/60), s=cur%60;
+    tc.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' / 02:14';
+  },1000);
+})();
+
+/* ============ GLITCH TRIGGER ============ */
+(function(){
+  const glitches=document.querySelectorAll('.glitch');
+  setInterval(()=>{
+    const el=glitches[Math.floor(Math.random()*glitches.length)];
+    el.classList.add('glitching');
+    setTimeout(()=>el.classList.remove('glitching'),350);
+  },2600);
+})();
+
+/* ============ TYPEWRITER SUBTITLE ============ */
+(function(){
+  const el=document.getElementById('typewriter');
+  const blink='<span class="blk"></span>';
+  const messages=["Event & Wedding Content Creator.","Bikin Design yang punya Story.","Graphic Designer.","Buat seesuai kebutuhan."];
+  let idx=0;
+  function typeOut(text,cb){
+    let i=0;
+    const iv=setInterval(()=>{
+      el.innerHTML=text.slice(0,i)+blink;
+      i++;
+      if(i>text.length+1){ clearInterval(iv); cb(); }
+    },42);
+  }
+  function eraseOut(text,cb){
+    let i=text.length;
+    const iv=setInterval(()=>{
+      el.innerHTML=text.slice(0,i)+blink;
+      i--;
+      if(i<0){ clearInterval(iv); cb(); }
+    },24);
+  }
+  function loopMsg(){
+    typeOut(messages[idx],()=>{
+      setTimeout(()=>{
+        eraseOut(messages[idx],()=>{
+          idx=(idx+1)%messages.length;
+          loopMsg();
+        });
+      },1800);
+    });
+  }
+  setTimeout(loopMsg, 1000);
+})();
+
+/* ============ SCROLLSPY ============ */
+(function(){
+  const links=document.querySelectorAll('.dock a');
+  const sections=document.querySelectorAll('section[id], header[id]');
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const active=document.querySelector('.dock a[data-sec="'+entry.target.id+'"]');
+        if(active) active.classList.add('active');
+      }
+    });
+  },{ rootMargin:"-45% 0px -45% 0px" });
+  sections.forEach(s=>obs.observe(s));
+})();
+
+/* ============ SCROLL REVEAL ============ */
+(function(){
+  const items=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); obs.unobserve(entry.target); }
+    });
+  },{ threshold:0.12 });
+  items.forEach(i=>obs.observe(i));
+})();
+
+/* ============ EQ BARS ============ */
+(function(){
+  const fills=document.querySelectorAll('.eq-fill');
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.style.width=entry.target.dataset.w+'%'; obs.unobserve(entry.target); }
+    });
+  },{ threshold:0.4 });
+  fills.forEach(f=>obs.observe(f));
+})();
+
+/* ============ PROJECT MODAL ============ */
+(function(){
+  const overlay=document.getElementById('modalOverlay');
+  const title=document.getElementById('modalTitle');
+  const desc=document.getElementById('modalDesc');
+  const tagsWrap=document.getElementById('modalTags');
+  const thumb=document.getElementById('modalThumb');
+  const modalImg=document.getElementById('modalImg');
+  const modalEmoji=document.getElementById('modalEmoji');
+  const modalWatch=document.getElementById('modalWatch');
+  const modalDrive=document.getElementById('modalDrive');
+  const thumbClasses=['ct1','ct2','ct3','ct4','ct5','ct6'];
+
+  document.querySelectorAll('.clip').forEach((card,idx)=>{
+    card.addEventListener('click',()=>{
+      title.textContent=card.dataset.title;
+      desc.textContent=card.dataset.desc;
+      modalEmoji.textContent=card.dataset.emoji;
+      modalImg.style.display='';
+      modalImg.src=card.dataset.img||'';
+      thumb.className='modal-thumb '+thumbClasses[idx%thumbClasses.length];
+      tagsWrap.innerHTML='';
+      card.dataset.tags.split(',').forEach(t=>{
+        const span=document.createElement('span'); span.textContent=t; tagsWrap.appendChild(span);
+      });
+      modalWatch.href=card.dataset.watch||'#';
+      modalDrive.href=card.dataset.drive||'#';
+      overlay.classList.add('show');
+    });
+  });
+  document.getElementById('modalClose').addEventListener('click',()=>overlay.classList.remove('show'));
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('show'); });
+})();
+
+/* ============ PRIORITY PILLS ============ */
+(function(){
+  const group=document.getElementById('priorityGroup');
+  group.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click',()=>{
+      group.querySelectorAll('.pill').forEach(x=>x.classList.remove('sel'));
+      p.classList.add('sel');
+    });
+  });
+})();
+
+/* ============ BACK TO TOP ============ */
+(function(){
+  const btn=document.getElementById('backToTop');
+  window.addEventListener('scroll',()=>{ btn.classList.toggle('show', window.scrollY>500); });
+  btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
+
+/* ============ TOAST ============ */
+function showToast(msg){
+  const toast=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3200);
+}
+
+/* ============ CONFETTI ============ */
+function burstConfetti(){
+  const colors=['#ff3232','#2ee6d6','#ff2e9a','#f4d35e'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    const size=5+Math.random()*7;
+    p.style.width=size+'px'; p.style.height=size*0.4+'px';
+    p.style.left=(50+(Math.random()*40-20))+'vw';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.top='40vh';
+    document.body.appendChild(p);
+    const dx=(Math.random()*400-200), dy=-(Math.random()*300+150), rot=Math.random()*720-360;
+    p.animate([
+      { transform:'translate(0,0) rotate(0deg)', opacity:1 },
+      { transform:`translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity:1, offset:0.5 },
+      { transform:`translate(${dx*1.3}px, ${dy*-1+500}px) rotate(${rot*1.5}deg)`, opacity:0 }
+    ],{ duration:1600+Math.random()*600, easing:'cubic-bezier(.16,1,.3,1)' });
+    setTimeout(()=>p.remove(),2300);
+  }
+}
+
+/* ============ CONTACT FORM — RENDER PROGRESS + KIRIM KE WHATSAPP ============ */
+const WA_NUMBER='6281535305262'; // nomor WhatsApp tujuan (format internasional tanpa +)
+
+document.getElementById('contactForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const progress=document.getElementById('renderProgress');
+  const fill=document.getElementById('renderFill');
+  const btn=this.querySelector('button[type="submit"]');
+
+  const nama=this.querySelector('[name="nama"]').value.trim();
+  const email=this.querySelector('[name="email"]').value.trim();
+  const pesan=this.querySelector('[name="pesan"]').value.trim();
+  const priorityEl=document.querySelector('#priorityGroup .pill.sel');
+  const priority=priorityEl?priorityEl.textContent.trim():'SANTAI';
+
+  progress.classList.add('show');
+  btn.textContent='⏳ RENDERING...';
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*20;
+    if(p>=100){
+      p=100; clearInterval(iv);
+      fill.style.width='100%';
+      setTimeout(()=>{
+        burstConfetti();
+        showToast('Render selesai — membuka WhatsApp... 🎬');
+        btn.textContent='▶ RENDER & SEND';
+        progress.classList.remove('show');
+        fill.style.width='0%';
+
+        const waText=
+`Halo Dhava, saya mau kontak lewat website kamu.
+
+Nama: ${nama}
+Email: ${email}
+Prioritas: ${priority}
+
+Pesan:
+${pesan}`;
+        const waUrl='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(waText);
+        window.open(waUrl,'_blank');
+
+        this.reset();
+      },500);
+    }
+    fill.style.width=p+'%';
+  },150);
+});
+</script>
+</body>
+</html>
